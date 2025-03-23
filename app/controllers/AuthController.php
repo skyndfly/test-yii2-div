@@ -3,14 +3,27 @@
 namespace app\controllers;
 
 use app\components\ApiResponse;
-use app\models\AuthToken;
-use app\models\User;
+use app\services\auth\contracts\AuthLoginServiceContract;
+use Exception;
 use Yii;
 use yii\web\Controller;
-use yii\web\Response;
 
 class AuthController extends Controller
 {
+    private AuthLoginServiceContract $loginService;
+
+    public function __construct(
+        $id,
+        $module,
+        AuthLoginServiceContract $loginService,
+        $config = [],
+    )
+    {
+        parent::__construct($id, $module, $config);
+        $this->loginService = $loginService;
+    }
+
+
     public function beforeAction($action)
     {
         // Отключаем CSRF проверку для метода login
@@ -21,21 +34,16 @@ class AuthController extends Controller
     }
     public function actionLogin()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $username = Yii::$app->request->post('username');
-        $password = Yii::$app->request->post('password');
-        $user = User::findOne(['username' => $username]);
-        if ($user && Yii::$app->security->validatePassword($password, $user->password_hash)) {
-            $token = Yii::$app->security->generateRandomString();
-            $authToken = new AuthToken();
-            $authToken->token = $token;
-            $authToken->user_id = $user->id;
-            $authToken->save();
+        try {
+            $username = Yii::$app->request->post('username');
+            $password = Yii::$app->request->post('password');
 
+            $token = $this->loginService->execute($username, $password);
             return ApiResponse::success(['token' => $token]);
+        }catch (Exception $e){
+            return ApiResponse::error($e->getMessage(), $e->getCode());
         }
 
-        return ApiResponse::error('Invalid credentials', 401);
 
     }
 }
