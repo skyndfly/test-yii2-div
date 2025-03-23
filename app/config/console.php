@@ -1,12 +1,22 @@
 <?php
 
+use app\providers\ServicesProvider;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$mailer = require __DIR__ . '/mailer.php';
+$queue = require __DIR__ . '/queue.php';
 
 $config = [
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log', 'queue'],
+    'bootstrap' => [
+        ServicesProvider::class,
+        'log',
+        'queue',
+        'mailer',
+
+    ],
     'controllerNamespace' => 'app\commands',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -26,13 +36,8 @@ $config = [
             ],
         ],
         'db' => $db,
-        'queue' => [
-            'class' => \yii\queue\db\Queue::class,
-            'db' => 'db',
-            'tableName' => '{{%queue}}',
-            'channel' => 'default',
-            'mutex' => \yii\mutex\MysqlMutex::class,
-        ]
+        'queue' => $queue,
+        'mailer' => $mailer,
     ],
     'params' => $params,
     /*

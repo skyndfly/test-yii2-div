@@ -18,6 +18,7 @@ class RequestResolveService implements contract\RequestResolveServiceContract
     public function execute(int $id, string $comment): void
     {
         $this->repository->resolve($id, $comment);
-        Yii::$app->queue->push(new RequestResolvedSendMailJob(1, $comment));
+        $email =  $this->repository->getEmailById($id);
+        Yii::$app->queue->push(new RequestResolvedSendMailJob($email, $comment));
     }
 }

@@ -50,4 +50,13 @@ class RequestRepository extends BaseRepository implements RequestRepositoryContr
             )
             ->execute();
     }
+
+    public function getEmailById(int $id): string
+    {
+        return $this->getQuery()
+            ->select('email')
+            ->from(self::TABLE)
+            ->where(['id'=> $id])
+            ->scalar();
+    }
 }

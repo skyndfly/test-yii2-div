@@ -11,4 +11,6 @@ interface RequestRepositoryContract
     public function getFiltered(?array $filters): array;
 
     public function resolve(int $id, string $message): void;
+
+    public function getEmailById(int $id): string;
 }
