@@ -3,7 +3,8 @@
 namespace app\services\request;
 
 use app\repositories\contracts\RequestRepositoryContract;
-use app\services\request\contract\RequestResolveServiceContract;
+use app\services\request\jobs\RequestResolvedSendMailJob;
+use Yii;
 
 class RequestResolveService implements contract\RequestResolveServiceContract
 {
@@ -17,5 +18,6 @@ class RequestResolveService implements contract\RequestResolveServiceContract
     public function execute(int $id, string $comment): void
     {
         $this->repository->resolve($id, $comment);
+        Yii::$app->queue->push(new RequestResolvedSendMailJob(1, $comment));
     }
 }

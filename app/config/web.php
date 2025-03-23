@@ -1,6 +1,7 @@
 <?php
 
 use app\providers\ServicesProvider;
+use yii\symfonymailer\Mailer;
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
@@ -31,7 +32,7 @@ $config = [
             'errorAction' => 'site/error',
         ],
         'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
+            'class' => Mailer::class,
             'viewPath' => '@app/mail',
             // send all mails to a file by default.
             'useFileTransport' => true,
@@ -66,6 +67,14 @@ $config = [
                     ],
                 ]
             ],
+        ],
+        'queue' => [
+            'class' => \yii\queue\db\Queue::class,
+            'db' => 'db',
+            'tableName' => '{{%queue}}',
+            'channel' => 'default',
+            'mutex' => \yii\mutex\MysqlMutex::class,
+            'as log' => \yii\queue\LogBehavior::class,
         ],
     ],
     'params' => $params,
