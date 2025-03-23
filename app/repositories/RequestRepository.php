@@ -33,5 +33,6 @@ class RequestRepository extends BaseRepository implements RequestRepositoryContr
         }
 
         return $query->all();
+
     }
 }

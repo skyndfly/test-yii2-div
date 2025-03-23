@@ -3,6 +3,7 @@
 namespace app\controllers\api;
 
 use app\components\ApiResponse;
+use app\filters\TokenAuth;
 use app\services\request\contract\RequestCreateServiceContract;
 use app\services\request\contract\RequestFilteredServiceContract;
 use app\services\request\dto\RequestCreateDto;
@@ -28,7 +29,22 @@ class RequestController extends Controller
         $this->filteredRequestService = $filteredRequestService;
     }
 
-
+    public function behaviors()
+    {
+        return [
+//            'corsFilter' => [
+//                'class' => \yii\filters\Cors::class,
+//                'cors' => [
+//                    'Origin' => ['http://sky.com'],
+//                    'Access-Control-Request-Method' => ['GET', 'POST', 'PUT'],
+//                ],
+//            ],
+            'tokenAuth' => [
+                'class' => TokenAuth::class,
+                'only' => ['index', 'update'],
+            ],
+        ];
+    }
     public function actionIndex()
     {
         try {
@@ -50,9 +66,10 @@ class RequestController extends Controller
                 $data['message']
             );
             $this->createRequestService->execute($dto);
-            return ApiResponse::success($dto);
+            return ApiResponse::success();
         }catch (Exception $e){
             return ApiResponse::error($e->getMessage(), 400, $e->getTraceAsString());
         }
     }
+
 }

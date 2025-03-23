@@ -55,6 +55,15 @@ $config = [
                     'controller' => 'api/request',
                     'pluralize' => true,
                     'only' => ['index', 'create', 'update'],
+                ],
+                [
+                    'class' => yii\rest\UrlRule::class,
+                    'controller' => 'auth',
+                    'pluralize' => false,
+                    'only' => ['login'],
+                    'extraPatterns' => [
+                        'POST login' => 'login',
+                    ],
                 ]
             ],
         ],
