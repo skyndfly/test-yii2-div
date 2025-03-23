@@ -9,7 +9,7 @@ class RequestRepository extends BaseRepository implements RequestRepositoryContr
 {
     public const  string TABLE = 'request';
 
-    public function create(RequestCreateDto $dto)
+    public function create(RequestCreateDto $dto): void
     {
         $this->getCommand()->insert(
             self::TABLE,
@@ -34,5 +34,20 @@ class RequestRepository extends BaseRepository implements RequestRepositoryContr
 
         return $query->all();
 
+    }
+
+    public function resolve(int $id, string $message): void
+    {
+        $this->getCommand()
+            ->update(
+                self::TABLE,
+                [
+                    'status' => RequestStatusEnum::RESOLVED->value,
+                    'updated_at' => (new DateTime())->format('Y-m-d H:i:s'),
+                    'comment' => $message,
+                ],
+                ['id' => $id]
+            )
+            ->execute();
     }
 }
