@@ -5,6 +5,7 @@ namespace app\controllers\api;
 use app\components\ApiResponse;
 use app\services\request\contract\RequestCreateServiceContract;
 use app\services\request\dto\RequestCreateDto;
+use Exception;
 use Yii;
 use yii\rest\Controller;
 
@@ -32,13 +33,17 @@ class RequestController extends Controller
 
     public function actionCreate()
     {
-        $data = Yii::$app->request->post();
-        $dto = new RequestCreateDto(
-            $data['name'],
-            $data['email'],
-            $data['message']
-        );
-        $this->createRequestService->execute($dto);
-        return ApiResponse::success($dto);
+        try {
+            $data = Yii::$app->request->post();
+            $dto = new RequestCreateDto(
+                $data['name'],
+                $data['email'],
+                $data['message']
+            );
+            $this->createRequestService->execute($dto);
+            return ApiResponse::success($dto);
+        }catch (Exception $e){
+            return ApiResponse::error($e->getMessage(), 400, $e->getTraceAsString());
+        }
     }
 }

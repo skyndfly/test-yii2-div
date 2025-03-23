@@ -17,7 +17,7 @@ class ApiResponse
     {
         Yii::$app->response->statusCode = $code;
         return [
-            'status' => 'error',
+            'status' => $code,
             'message' => $message,
             'errors' => $errors,
         ];
