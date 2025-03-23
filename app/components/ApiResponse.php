@@ -10,6 +10,7 @@ class ApiResponse
         return [
             'status' => $code,
             'message' => $message,
+            'total' => count($data),
             'data' => $data,
         ];
     }

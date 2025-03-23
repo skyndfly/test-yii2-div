@@ -15,6 +15,7 @@ class ServicesProvider implements BootstrapInterface
         ];
         $services = [
             \app\services\request\contract\RequestCreateServiceContract::class => \app\services\request\RequestCreateService::class,
+            \app\services\request\contract\RequestFilteredServiceContract::class => \app\services\request\RequestFilteredService::class,
         ];
 
         $container = Yii::$container;

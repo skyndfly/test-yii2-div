@@ -23,4 +23,21 @@ class RequestRepository extends BaseRepository implements RequestRepositoryContr
         )
             ->execute();
     }
+
+    public function getFiltered(?array $filters): array
+    {
+        $query = $this->getQuery()->from(self::TABLE);
+
+        if (!empty($filters['status'])) {
+          $query->andWhere(['status' => $filters['status']]);
+        }
+        if (!empty($filters['created_from'])) {
+            $query->andWhere(['>=', 'created_at', $filters['created_from'] . " 00:00:00"]);
+        }
+        if (!empty($filters['created_to'])) {
+            $query->andWhere(['<=', 'created_at', $filters['created_to'] . " 23:59:59"]);
+        }
+
+        return $query->all();
+    }
 }
