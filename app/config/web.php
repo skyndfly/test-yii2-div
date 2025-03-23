@@ -62,7 +62,9 @@ $config = [
                     'extraPatterns' => [
                         'POST login' => 'login',
                     ],
-                ]
+                ],
+
+
             ],
         ],
         'queue' => $queue,
